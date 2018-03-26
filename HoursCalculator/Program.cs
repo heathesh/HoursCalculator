@@ -34,12 +34,62 @@ namespace HoursCalculator
                     hoursRequiredToWork += 8;
             }
 
+            Console.WriteLine(
+                $"Leave days taken: {_configurationSettings.LeaveDaysTaken} of {_configurationSettings.LeaveDaysAllowed}");
+            Console.WriteLine(
+                $"Sick leave days taken: {_configurationSettings.SickLeaveDaysTaken} of {_configurationSettings.SickLeaveDaysAllowed}");
+            Console.WriteLine(
+                $"Family leave days taken: {_configurationSettings.FamilyLeaveDaysTaken} of {_configurationSettings.FamilyLeaveDaysAllowed}");
+
+            UpdateHoursRequiredWithLeave(ref hoursRequiredToWork);
+
+            Console.WriteLine();
             Console.WriteLine($"Hours worked: {hoursWorked}");
             Console.WriteLine($"Hours required: {hoursRequiredToWork}");
             Console.WriteLine($"Hours short: {hoursRequiredToWork - hoursWorked}");
             Console.WriteLine();
             Console.Write("Hit enter to continue...");
             Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Updates the hours required with leave.
+        /// </summary>
+        /// <param name="hoursRequired">The hours required.</param>
+        private static void UpdateHoursRequiredWithLeave(ref int hoursRequired)
+        {
+            if (_configurationSettings.LeaveDaysTaken > 0)
+                UpdateHoursRequiredWithLeaveDetails(ref hoursRequired, _configurationSettings.LeaveDaysTaken,
+                    _configurationSettings.LeaveDaysAllowed);
+
+            if (_configurationSettings.SickLeaveDaysTaken > 0)
+                UpdateHoursRequiredWithLeaveDetails(ref hoursRequired, _configurationSettings.SickLeaveDaysTaken,
+                    _configurationSettings.SickLeaveDaysAllowed);
+
+            if (_configurationSettings.FamilyLeaveDaysTaken > 0)
+                UpdateHoursRequiredWithLeaveDetails(ref hoursRequired, _configurationSettings.FamilyLeaveDaysTaken,
+                    _configurationSettings.FamilyLeaveDaysAllowed);
+        }
+
+        /// <summary>
+        /// Updates the hours required with leave details.
+        /// </summary>
+        /// <param name="hoursRequired">The hours required.</param>
+        /// <param name="leaveDaysTaken">The leave days taken.</param>
+        /// <param name="leaveDaysAllowed">The leave days allowed.</param>
+        private static void UpdateHoursRequiredWithLeaveDetails(ref int hoursRequired, int leaveDaysTaken,
+            int leaveDaysAllowed)
+        {
+            //remove the leave days taken from the hours required
+            hoursRequired = hoursRequired - (leaveDaysTaken * 8);
+
+            //add any extra days taken as hours required to be worked back
+            if (leaveDaysTaken > leaveDaysAllowed)
+            {
+                var extraLeaveDays = leaveDaysTaken - leaveDaysAllowed;
+
+                hoursRequired = hoursRequired + (extraLeaveDays * 8);
+            }
         }
 
         /// <summary>
@@ -53,7 +103,7 @@ namespace HoursCalculator
 
             foreach (var timesheetFile in files)
             {
-                if (timesheetFile.Contains(_configurationSettings.TimesheetFilenamePrefix))
+                if (timesheetFile.Contains(_configurationSettings.TimesheetFilenameContains))
                 {
                     var file = new FileInfo(timesheetFile);
                     using (var package = new ExcelPackage(file))
@@ -141,7 +191,13 @@ namespace HoursCalculator
             _configurationSettings = new ConfigurationSettings
             {
                 TimesheetFolder = configuration["TimesheetFolder"],
-                TimesheetFilenamePrefix = configuration["TimesheetFilenamePrefix"]
+                TimesheetFilenameContains = configuration["TimesheetFilenameContains"],
+                LeaveDaysTaken = Convert.ToInt32(configuration["LeaveDaysTaken"]),
+                LeaveDaysAllowed = Convert.ToInt32(configuration["LeaveDaysAllowed"]),
+                SickLeaveDaysTaken = Convert.ToInt32(configuration["SickLeaveDaysTaken"]),
+                SickLeaveDaysAllowed = Convert.ToInt32(configuration["SickLeaveDaysAllowed"]),
+                FamilyLeaveDaysTaken = Convert.ToInt32(configuration["FamilyLeaveDaysTaken"]),
+                FamilyLeaveDaysAllowed = Convert.ToInt32(configuration["FamilyLeaveDaysAllowed"])
             };
 
             var publicHolidaysConfigurationSection = configuration.GetSection("PublicHolidays");

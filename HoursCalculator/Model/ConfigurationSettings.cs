@@ -17,12 +17,60 @@ namespace HoursCalculator.Model
         public string TimesheetFolder { get; set; }
 
         /// <summary>
-        /// Gets or sets the timesheet filename prefix.
+        /// Gets or sets the timesheet filename contains.
         /// </summary>
         /// <value>
-        /// The timesheet filename prefix.
+        /// The timesheet filename contains.
         /// </value>
-        public string TimesheetFilenamePrefix { get; set; }
+        public string TimesheetFilenameContains { get; set; }
+
+        /// <summary>
+        /// Gets or sets the leave days taken.
+        /// </summary>
+        /// <value>
+        /// The leave days taken.
+        /// </value>
+        public int LeaveDaysTaken { get; set; }
+
+        /// <summary>
+        /// Gets or sets the leave days allowed.
+        /// </summary>
+        /// <value>
+        /// The leave days allowed.
+        /// </value>
+        public int LeaveDaysAllowed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sick leave days taken.
+        /// </summary>
+        /// <value>
+        /// The sick leave days taken.
+        /// </value>
+        public int SickLeaveDaysTaken { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sick leave days allowed.
+        /// </summary>
+        /// <value>
+        /// The sick leave days allowed.
+        /// </value>
+        public int SickLeaveDaysAllowed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the family leave days taken.
+        /// </summary>
+        /// <value>
+        /// The family leave days taken.
+        /// </value>
+        public int FamilyLeaveDaysTaken { get; set; }
+
+        /// <summary>
+        /// Gets or sets the family leave days allowed.
+        /// </summary>
+        /// <value>
+        /// The family leave days allowed.
+        /// </value>
+        public int FamilyLeaveDaysAllowed { get; set; }
 
         /// <summary>
         /// Gets or sets the public holidays.
